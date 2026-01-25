@@ -1,1 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТО УВТ T-TOP «F-SW» ULTRA</title>
 
+<!-- Roboto font -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    background: #0f1115;
+    color: #e6e6e6;
+}
+
+.container {
+    height: 100vh;
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #9aa0a6;
+}
+
+.logo {
+    height: 160px;
+    object-fit: contain;
+}
+
+/* DEVICE IMAGE */
+.device {
+    width: 100%;
+    max-height: 220px;
+    object-fit: contain;
+    margin: 16px 0;
+}
+
+/* INFO */
+.info {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.info span {
+    color: #9aa0a6;
+}
+
+/* NEXT TO */
+.next-to {
+    background: #1a1d23;
+    border-left: 5px solid #1976d2;
+    padding: 14px;
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+}
+
+/* TABLE */
+.table-block {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #2a2d34;
+}
+
+th {
+    background: #1a1d23;
+    font-weight: 500;
+}
+
+/* BUTTONS */
+button {
+    margin-top: 16px;
+    padding: 18px;
+    font-size: 1.15rem;
+    font-weight: 500;
+    background: #b71c1c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #d32f2f;
+}
+
+.call-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 18px;
+    font-size: 1.15rem;
+    font-weight: 500;
+    text-align: center;
+    background: #1976d2;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.call-btn:hover {
+    background: #2196f3;
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #1a1d23;
+    padding: 20px;
+    width: 100%;
+    max-width: 460px;
+    border-radius: 10px;
+}
+
+.modal-content h3 {
+    text-align: center;
+    margin-bottom: 14px;
+    font-size: 1.3rem;
+}
+
+textarea, input[type="file"] {
+    width: 100%;
+    margin-bottom: 12px;
+    background: #0f1115;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.close {
+    background: #444;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .title { font-size: 1.6rem; }
+    .subtitle { font-size: 1.05rem; }
+    .logo { height: 120px; }
+    .info, .next-to, table { font-size: 1rem; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <div class="title">
+                УВТ T-TOP «F-SW»<br>ULTRA
+            </div>
+            <div class="subtitle">
+                Storz Medical — Техническое обслуживание
+            </div>
+        </div>
+
+        <img src="logo clinic.png" class="logo" alt="Логотип клиники">
+    </div>
+
+    <!-- DEVICE IMAGE -->
+    <img src="device for dark.png" class="device" alt="Аппарат УВТ">
+
+    <!-- INFO -->
+    <div class="info">
+        🏷 <span>Внутренний номер:</span> №02<br>
+        🔢 <span>Серийный номер:</span> TT.9503<br>
+        📍 <span>Расположение:</span> ул. Энтузиастов, 26<br>
+        👨‍🔧 <span>Ответственный:</span> Александр
+    </div>
+
+    <!-- NEXT TO -->
+    <div class="next-to">
+        ⏱ До следующего ТО: <strong><span id="days"></span> дней</strong><br>
+        📅 Следующее ТО: <strong>25.07.2026</strong>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-block">
+        <table>
+            <thead>
+                <tr>
+                    <th>Дата ТО</th>
+                    <th>Тип</th>
+                    <th>Ответственный</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>25.01.2026</td>
+                    <td>Плановое</td>
+                    <td>Александр</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- BUTTONS -->
+    <button onclick="openModal()">🚨 Сообщить о проблеме с аппаратом</button>
+
+    <a href="tel:+79171078418" class="call-btn">
+        📞 Позвонить медтехнику
+    </a>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3>📝 Сообщение медтехнику</h3>
+
+        <form action="https://formspree.io/f/XXXXYYYY"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <textarea name="message" rows="4" placeholder="Опишите проблему" required></textarea>
+            <input type="file" name="files" accept="image/*,video/*" multiple>
+
+            <button type="submit">📤 Отправить</button>
+        </form>
+
+        <button class="close" onclick="closeModal()">Закрыть</button>
+    </div>
+</div>
+
+<script>
+function openModal() {
+    document.getElementById('modal').style.display = 'flex';
+}
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+
+// Расчёт дней до следующего ТО
+const nextTO = new Date('2026-07-25');
+const today = new Date();
+const diff = Math.ceil((nextTO - today) / (1000 * 60 * 60 * 24));
+document.getElementById('days').innerText = diff > 0 ? diff : 0;
+</script>
+
+</body>
+</html>
