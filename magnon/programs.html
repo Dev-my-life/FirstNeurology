@@ -1,5 +1,6 @@
 
 <!doctype html>
+<!-- BUILD: MAGNON-COMPACT-TWO-COLUMN-EXPORT-V3 -->
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -13,12 +14,21 @@
 @media(max-width:760px){.wrap{width:min(100% - 16px,680px);padding-top:10px}.top{align-items:flex-end}.top h1{font-size:28px}.toolbar{grid-template-columns:1fr;top:5px;border-radius:15px;padding:6px}.actions{display:grid;grid-template-columns:1fr 1fr 43px}.btn{padding:0 8px;font-size:12px}.section-head{padding:12px 12px 10px}.section h2{font-size:17px}.section-desc{font-size:12px}.program-grid{grid-template-columns:1fr}.program{grid-template-columns:48px minmax(0,1fr) 17px;min-height:49px;padding:8px 10px}.program-name{font-size:13px}.overlay{align-items:flex-end;padding:0}.modal{width:100%;max-height:94dvh;border-radius:20px 20px 0 0}.modal-head{padding:13px 13px 11px}.modal-body{padding:12px 12px 18px}.info-grid{grid-template-columns:1fr;gap:8px}.info{padding:10px 11px}.info p{font-size:13px}.phase-table-wrap{display:none}.phase-cards{display:grid;gap:8px}.phase-title h4{font-size:16px}.notice{font-size:11px}.modal h3{font-size:22px}}
 @media(max-width:390px){.btn span.hide-xs{display:none}.actions{grid-template-columns:1fr 1fr 43px}.top .count{padding:6px 8px;font-size:11px}.top .count b{font-size:14px}}
 @media print{.toolbar,.foot,.overlay{display:none!important}.wrap{width:100%;padding:0}.section{box-shadow:none;margin-bottom:8px}.program-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* compact header, local logo and phone-first search results */
+.brand-wrap{display:flex;align-items:center;gap:11px;min-width:0}.site-logo{width:48px;height:48px;object-fit:contain;flex:none}.logo-fallback{display:grid;width:48px;height:48px;place-items:center;border:1px dashed var(--line);border-radius:13px;background:var(--surface);color:var(--muted);font-size:9px;font-weight:850;letter-spacing:.08em;line-height:1;text-align:center;flex:none}.search-results{display:none;grid-column:1/-1;border:1px solid var(--line);border-radius:13px;background:var(--surface);overflow:hidden}.search-results.show{display:block}.search-status{padding:7px 10px;border-bottom:1px solid var(--line);background:var(--surface-2);color:var(--muted);font-size:12px}.search-status b{color:var(--brand-2)}.quick-list{display:grid;max-height:min(42dvh,330px);overflow-y:auto}.quick-result{display:grid;grid-template-columns:44px minmax(0,1fr) 16px;gap:8px;align-items:center;min-height:44px;padding:7px 9px;border:0;border-bottom:1px solid var(--line);background:var(--surface);color:var(--text);text-align:left;cursor:pointer}.quick-result:last-child{border-bottom:0}.quick-result:hover,.quick-result:focus-visible{background:var(--surface-2);outline:none}.quick-id{display:grid;place-items:center;min-height:28px;border-radius:8px;background:var(--accent);color:var(--brand-2);font-size:12px;font-weight:900}.quick-name{display:block;font-size:13px;font-weight:800;line-height:1.22}.quick-meta{display:block;margin-top:2px;color:var(--muted);font-size:11px;line-height:1.15}.quick-result svg{width:15px;height:15px;color:var(--muted)}
+@media(max-width:760px){.site-logo,.logo-fallback{width:40px;height:40px}.brand-wrap{gap:8px}.toolbar.searching .actions{display:none}.toolbar.focused{top:4px}.search-results{border-radius:11px}.quick-list{max-height:min(45dvh,310px)}.quick-result{grid-template-columns:42px minmax(0,1fr) 14px;min-height:42px;padding:6px 8px}.quick-name{font-size:12.5px}.quick-meta{font-size:10.5px}}
+@media(max-width:390px){.site-logo,.logo-fallback{width:36px;height:36px}.top h1{font-size:24px}}
+
 </style>
 </head>
 <body>
 <main class="wrap">
   <header class="top">
-    <h1>Программы «Магнон»</h1>
+    <div class="brand-wrap">
+      <img class="site-logo" src="./logoclinic.png" alt="Логотип" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="logo-fallback" hidden>LOGO</span>
+      <h1>Программы «Магнон»</h1>
+    </div>
     <div class="count"><b>41</b><span>программа</span></div>
   </header>
   <div class="toolbar">
@@ -31,6 +41,7 @@
       <button class="btn" id="pngBtn" type="button" title="Скачать PNG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span>PNG</span></button>
       <button class="btn icon-only" id="themeBtn" type="button" aria-label="Переключить тему" title="Переключить тему"><svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a7 7 0 1 0 7 7c0-.46-.04-.9-.12-1.33A7.01 7.01 0 0 1 12 3Z"></path></svg></button>
     </div>
+    <div class="search-results" id="searchResults" aria-live="polite"></div>
   </div>
   <div class="sections" id="sections"></div>
   <div class="empty" id="empty">Ничего не найдено.</div>
@@ -69,17 +80,39 @@ const PDF_FONT='AAEAAAASAQAABAAgRFNJRwAAAAEAB9KYAAAACEdERUbr/eMJAAamcAAABSJHUE9T
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const fmt=v=>v===null||v===undefined?'—':String(v).replace('.',',');
-const q=$('#q'), sectionsEl=$('#sections'), empty=$('#empty'), overlay=$('#overlay');
+const q=$('#q'), sectionsEl=$('#sections'), empty=$('#empty'), overlay=$('#overlay'), toolbar=document.querySelector('.toolbar'), searchResults=$('#searchResults');
+function norm(value){return String(value||'').toLowerCase().replace(/ё/g,'е').trim()}
+function searchText(p){return norm([p.id,p.name,p.sectionTitle,p.description].join(' '))}
+function scoreMatch(p,needle){
+ const id=norm(p.id),name=norm(p.name);
+ if(id===needle)return 100;
+ if(id.startsWith(needle))return 80;
+ if(name.startsWith(needle))return 60;
+ if(name.includes(needle))return 40;
+ return 20;
+}
+function getMatches(needle){
+ if(!needle)return PROGRAMS.slice();
+ return PROGRAMS.filter(p=>searchText(p).includes(needle)).sort((a,b)=>scoreMatch(b,needle)-scoreMatch(a,needle)||a.num-b.num);
+}
+function renderQuickResults(matches,needle){
+ const active=Boolean(needle);toolbar.classList.toggle('searching',active);
+ if(!active){searchResults.classList.remove('show');searchResults.innerHTML='';return}
+ const top=matches.slice(0,7);
+ searchResults.innerHTML=`<div class="search-status">${matches.length?`Найдено: <b>${matches.length}</b>. Нажмите на программу, чтобы открыть параметры.`:'Ничего не найдено.'}</div>${top.length?`<div class="quick-list">${top.map(p=>`<button class="quick-result" type="button" data-id="${p.id}"><span class="quick-id">${p.id}</span><span><span class="quick-name">${esc(p.name)}</span><span class="quick-meta">${esc(p.sectionTitle)}</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg></button>`).join('')}</div>`:''}`;
+ searchResults.classList.add('show');
+ searchResults.querySelectorAll('.quick-result').forEach(b=>b.addEventListener('click',()=>openProgram(b.dataset.id)));
+}
 function render(){
- const needle=q.value.trim().toLowerCase(); let shown=0; sectionsEl.innerHTML='';
+ const needle=norm(q.value); const matches=getMatches(needle); let shown=0; sectionsEl.innerHTML='';
  for(const section of SECTIONS){
-   const items=PROGRAMS.filter(p=>p.section===section.key && (!needle || (p.id+' '+p.name).toLowerCase().includes(needle)));
+   const items=matches.filter(p=>p.section===section.key);
    if(!items.length) continue; shown+=items.length;
    const el=document.createElement('section'); el.className='section';
    el.innerHTML=`<div class="section-head"><h2>${esc(section.title)}</h2><span class="section-range">${esc(section.range)}</span><p class="section-desc">${esc(section.description)}</p></div><div class="program-grid">${items.map(p=>`<button type="button" class="program" data-id="${p.id}"><span class="program-id">${p.id}</span><span class="program-name">${esc(p.name)}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg></button>`).join('')}</div>`;
    sectionsEl.append(el);
  }
- empty.classList.toggle('show',shown===0);
+ empty.classList.toggle('show',shown===0);renderQuickResults(matches,needle);
  document.querySelectorAll('.program').forEach(b=>b.addEventListener('click',()=>openProgram(b.dataset.id)));
 }
 function phaseRow(p,i){return `<tr><td>${i+1}</td><td>${esc(p.polarity)}</td><td>${fmt(p.duration)}</td><td>${fmt(p.fill)}</td><td>${fmt(p.modulation)}</td><td>${fmt(p.maxF1)}</td><td>${fmt(p.freq1)}</td><td>${fmt(p.freq2)}</td><td>${fmt(p.timer)}</td></tr>`}
@@ -98,29 +131,38 @@ function openProgram(id){
  overlay.classList.add('open'); document.body.style.overflow='hidden'; $('#closeBtn').focus();
 }
 function closeModal(){overlay.classList.remove('open');document.body.style.overflow=''}
-$('#closeBtn').addEventListener('click',closeModal);overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});q.addEventListener('input',render);
-function applyTheme(theme){document.documentElement.dataset.theme=theme;localStorage.setItem('magnon-theme',theme);document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#101814':'#f6f8f6'}
-applyTheme(localStorage.getItem('magnon-theme')||'light');$('#themeBtn').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+$('#closeBtn').addEventListener('click',closeModal);overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});q.addEventListener('input',render);q.addEventListener('search',render);q.addEventListener('focus',()=>{toolbar.classList.add('focused');setTimeout(()=>toolbar.scrollIntoView({block:'start',behavior:'smooth'}),100);render()});q.addEventListener('blur',()=>setTimeout(()=>toolbar.classList.remove('focused'),180));
+function getSavedTheme(){try{return localStorage.getItem('magnon-theme')}catch(e){return null}}
+function applyTheme(theme){document.documentElement.dataset.theme=theme;try{localStorage.setItem('magnon-theme',theme)}catch(e){}document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#101814':'#f6f8f6'}
+applyTheme(getSavedTheme()||'light');$('#themeBtn').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
 function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1200)}
 function sectionLabel(p){return p.section==='dynamic'?'Динамический электросон':p.section==='mdm'?'МДМ':'Процедуры'}
+function pdfRows(doc,items,fontSize,nameWidth){
+ doc.setFontSize(fontSize);const lineH=fontSize*.40,pad=.55,minH=lineH+pad*2;
+ return items.map(p=>{const lines=doc.splitTextToSize(p.name,nameWidth-2.4);return {p,lines,h:Math.max(minH,lines.length*lineH+pad*2)}});
+}
+function fitPdfTables(doc,leftItems,rightItems,nameWidth,availableHeight){
+ for(let fs=10.8;fs>=7;fs-=.2){const left=pdfRows(doc,leftItems,fs,nameWidth),right=pdfRows(doc,rightItems,fs,nameWidth);const headerH=fs*.40+1.6;const height=Math.max(left.reduce((a,r)=>a+r.h,headerH),right.reduce((a,r)=>a+r.h,headerH));if(height<=availableHeight)return {fs,left,right,headerH}}
+ const fs=6.8,left=pdfRows(doc,leftItems,fs,nameWidth),right=pdfRows(doc,rightItems,fs,nameWidth);return {fs,left,right,headerH:fs*.40+1.6};
+}
+function drawPdfTable(doc,x,y,w,numW,rows,fs,headerH){
+ const nameW=w-numW;doc.setDrawColor(115,132,124);doc.setLineWidth(.18);doc.setFillColor(213,227,220);doc.rect(x,y,w,headerH,'FD');doc.line(x+numW,y,x+numW,y+headerH);
+ doc.setTextColor(20,43,34);doc.setFontSize(fs+.2);doc.text('№',x+numW/2,y+headerH/2+.7,{align:'center'});doc.text('Программа',x+numW+nameW/2,y+headerH/2+.7,{align:'center'});y+=headerH;
+ doc.setFontSize(fs);rows.forEach((r,i)=>{doc.setFillColor(i%2?248:255,i%2?250:255,i%2?249:255);doc.rect(x,y,w,r.h,'FD');doc.line(x+numW,y,x+numW,y+r.h);doc.setTextColor(26,43,36);doc.text(r.p.id,x+numW/2,y+r.h/2+.7,{align:'center'});const lineH=fs*.40;const start=y+r.h/2-((r.lines.length-1)*lineH)/2+.7;doc.text(r.lines,x+numW+1.2,start);y+=r.h});
+}
 async function exportPdf(){
  try{
   const jspdf=window.jspdf;if(!jspdf||!jspdf.jsPDF)throw new Error('Не загружена библиотека PDF');
-  const doc=new jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-  doc.addFileToVFS('NotoSans-Regular.ttf',PDF_FONT);doc.addFont('NotoSans-Regular.ttf','NotoSans','normal');doc.setFont('NotoSans','normal');
-  doc.setFontSize(12);doc.text('Программы «Магнон»',10,10);
-  doc.setFontSize(7);doc.setTextColor(90,105,98);doc.text('Полный список: 41 программа',10,14);
-  doc.autoTable({startY:17,margin:{left:8,right:8,bottom:7},head:[['№','Программа','Раздел']],body:PROGRAMS.map(p=>[p.id,p.name,sectionLabel(p)]),theme:'grid',styles:{font:'NotoSans',fontStyle:'normal',fontSize:7.25,cellPadding:1.05,lineWidth:.12,lineColor:[189,203,196],textColor:[26,42,35],overflow:'linebreak'},headStyles:{fillColor:[214,229,221],textColor:[20,50,39],fontStyle:'normal'},alternateRowStyles:{fillColor:[247,250,248]},columnStyles:{0:{cellWidth:14,halign:'center'},1:{cellWidth:115},2:{cellWidth:63}},pageBreak:'avoid'});
-  doc.save('programmy-magnon-41.pdf');
+  const doc=new jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a5',compress:true});doc.addFileToVFS('NotoSans-Regular.ttf',PDF_FONT);doc.addFont('NotoSans-Regular.ttf','NotoSans','normal');doc.setFont('NotoSans','normal');
+  const pageW=doc.internal.pageSize.getWidth(),pageH=doc.internal.pageSize.getHeight(),margin=3,gap=3,tableW=(pageW-margin*2-gap)/2,numW=10,nameW=tableW-numW,left=PROGRAMS.slice(0,22),right=PROGRAMS.slice(22),fit=fitPdfTables(doc,left,right,nameW,pageH-margin*2);
+  drawPdfTable(doc,margin,margin,tableW,numW,fit.left,fit.fs,fit.headerH);drawPdfTable(doc,margin+tableW+gap,margin,tableW,numW,fit.right,fit.fs,fit.headerH);doc.save('programmy-magnon-41.pdf');
  }catch(err){console.error(err);alert('Не удалось сформировать PDF. Проверьте подключение к интернету и повторите попытку.');}
 }
 function wrapText(ctx,text,maxWidth){const words=text.split(/\s+/);const lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);return lines}
+function pngRows(ctx,items,nameW,fontSize){ctx.font=`${fontSize}px Arial`;const lineH=Math.round(fontSize*1.16),pad=Math.max(4,Math.round(fontSize*.18));return items.map(p=>{const lines=wrapText(ctx,p.name,nameW-pad*2);return {p,lines,h:Math.max(lineH+pad*2,lines.length*lineH+pad*2)}})}
+function drawPngTable(ctx,x,y,w,numW,rows,fontSize,headH){const nameW=w-numW;ctx.strokeStyle='#6f837a';ctx.lineWidth=1.4;ctx.fillStyle='#d5e3dc';ctx.fillRect(x,y,w,headH);ctx.strokeRect(x,y,w,headH);ctx.beginPath();ctx.moveTo(x+numW,y);ctx.lineTo(x+numW,y+headH);ctx.stroke();ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillStyle='#162d24';ctx.font=`700 ${fontSize}px Arial`;ctx.fillText('№',x+numW/2,y+headH/2);ctx.fillText('Программа',x+numW+nameW/2,y+headH/2);y+=headH;const lineH=Math.round(fontSize*1.16);rows.forEach((r,i)=>{ctx.fillStyle=i%2?'#f8faf9':'#ffffff';ctx.fillRect(x,y,w,r.h);ctx.strokeStyle='#afbeb8';ctx.lineWidth=1;ctx.strokeRect(x,y,w,r.h);ctx.beginPath();ctx.moveTo(x+numW,y);ctx.lineTo(x+numW,y+r.h);ctx.stroke();ctx.fillStyle='#1a3028';ctx.font=`700 ${fontSize}px Arial`;ctx.textAlign='center';ctx.fillText(r.p.id,x+numW/2,y+r.h/2);ctx.font=`${fontSize}px Arial`;ctx.textAlign='left';r.lines.forEach((line,j)=>ctx.fillText(line,x+numW+8,y+r.h/2+(j-(r.lines.length-1)/2)*lineH));y+=r.h})}
 function exportPng(){
- const scale=2,width=1500,margin=54,numW=120,sectionW=300,nameW=width-margin*2-numW-sectionW;const headH=58,titleH=96,rowPad=12;
- const c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font='23px Arial';const rows=PROGRAMS.map(p=>{const lines=wrapText(ctx,p.name,nameW-28);return {...p,lines,h:Math.max(48,lines.length*27+rowPad*2)}});const total=titleH+headH+rows.reduce((a,r)=>a+r.h,0)+margin*2;c.width=width*scale;c.height=total*scale;ctx.scale(scale,scale);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,width,total);ctx.fillStyle='#183c2d';ctx.font='700 36px Arial';ctx.fillText('Программы «Магнон»',margin,margin+38);ctx.font='20px Arial';ctx.fillStyle='#6a7b73';ctx.fillText('Полный список: 41 программа',margin,margin+72);
- let y=margin+titleH;const x=margin;ctx.fillStyle='#d6e5de';ctx.fillRect(x,y,width-margin*2,headH);ctx.strokeStyle='#8fa29a';ctx.lineWidth=1.5;ctx.strokeRect(x,y,width-margin*2,headH);ctx.font='700 22px Arial';ctx.fillStyle='#1a3329';ctx.textBaseline='middle';ctx.fillText('№',x+42,y+headH/2);ctx.fillText('Программа',x+numW+18,y+headH/2);ctx.fillText('Раздел',x+numW+nameW+18,y+headH/2);ctx.beginPath();ctx.moveTo(x+numW,y);ctx.lineTo(x+numW,total-margin);ctx.moveTo(x+numW+nameW,y);ctx.lineTo(x+numW+nameW,total-margin);ctx.stroke();y+=headH;
- rows.forEach((r,i)=>{ctx.fillStyle=i%2?'#f8faf9':'#ffffff';ctx.fillRect(x,y,width-margin*2,r.h);ctx.strokeStyle='#c0cdc7';ctx.lineWidth=1;ctx.strokeRect(x,y,width-margin*2,r.h);ctx.beginPath();ctx.moveTo(x+numW,y);ctx.lineTo(x+numW,y+r.h);ctx.moveTo(x+numW+nameW,y);ctx.lineTo(x+numW+nameW,y+r.h);ctx.stroke();ctx.fillStyle='#1b3028';ctx.font='700 21px Arial';ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillText(r.id,x+numW/2,y+r.h/2);ctx.textAlign='left';ctx.font='21px Arial';r.lines.forEach((line,j)=>ctx.fillText(line,x+numW+16,y+r.h/2+(j-(r.lines.length-1)/2)*27));ctx.font='19px Arial';ctx.fillStyle='#53655d';ctx.fillText(sectionLabel(r),x+numW+nameW+16,y+r.h/2);y+=r.h});
- c.toBlob(blob=>downloadBlob(blob,'programmy-magnon-41.png'),'image/png');
+ const scale=2,width=1600,margin=18,gap=16,tableW=(width-margin*2-gap)/2,numW=78,nameW=tableW-numW,fontSize=27,headH=48,c=document.createElement('canvas'),ctx=c.getContext('2d'),leftItems=PROGRAMS.slice(0,22),rightItems=PROGRAMS.slice(22);ctx.font=`${fontSize}px Arial`;const left=pngRows(ctx,leftItems,nameW,fontSize),right=pngRows(ctx,rightItems,nameW,fontSize),height=margin*2+headH+Math.max(left.reduce((a,r)=>a+r.h,0),right.reduce((a,r)=>a+r.h,0));c.width=width*scale;c.height=height*scale;ctx.scale(scale,scale);ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);drawPngTable(ctx,margin,margin,tableW,numW,left,fontSize,headH);drawPngTable(ctx,margin+tableW+gap,margin,tableW,numW,right,fontSize,headH);c.toBlob(blob=>downloadBlob(blob,'programmy-magnon-41.png'),'image/png');
 }
 $('#pdfBtn').addEventListener('click',exportPdf);$('#pngBtn').addEventListener('click',exportPng);render();
 </script>
