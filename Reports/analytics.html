@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090b0c">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Аналитика · Период №2</title>
+  <style>
+    :root { --bg:#090b0c; --panel:#111516; --paper:#f2eee5; --muted:#929895; --line:rgba(242,238,229,.16); --accent:#d8ff45; --danger:#ff655f; --mono:"Courier New",monospace; }
+    * { box-sizing:border-box; }
+    html,body { width:100%; height:100%; margin:0; overflow:hidden; background:var(--bg); color:var(--paper); font-family:Arial,Helvetica,sans-serif; }
+    button,a { color:inherit; font:inherit; -webkit-tap-highlight-color:transparent; }
+    .app { height:100dvh; display:grid; grid-template-rows:auto auto minmax(0,1fr); background:radial-gradient(circle at 75% -20%,rgba(216,255,69,.10),transparent 28%),var(--bg); }
+    header { min-height:64px; padding:max(10px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left)); display:flex; align-items:center; justify-content:space-between; gap:14px; border-bottom:1px solid var(--line); }
+    .brand { min-width:0; display:flex; align-items:center; gap:11px; }
+    .dot { width:9px; height:9px; flex:0 0 9px; border-radius:50%; background:var(--accent); box-shadow:0 0 18px rgba(216,255,69,.65); }
+    h1 { margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:clamp(15px,2vw,20px); letter-spacing:-.025em; }
+    .period { display:block; margin-top:3px; color:var(--muted); font:9px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; }
+    .actions { display:flex; align-items:center; gap:8px; }
+    .control { min-height:38px; padding:0 13px; border:1px solid var(--line); border-radius:9px; background:transparent; color:var(--paper); cursor:pointer; font:700 9px/1 var(--mono); letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; }
+    .control:hover,.control:focus-visible { border-color:var(--accent); outline:none; }
+    .owner[aria-pressed="true"] { border-color:var(--accent); background:var(--accent); color:#111506; }
+    .reset { border-color:rgba(255,101,95,.55); color:#ffaaa6; }
+    .reset:hover,.reset:focus-visible { border-color:var(--danger); background:rgba(255,101,95,.10); }
+    nav { min-width:0; padding:8px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left)); display:flex; align-items:center; gap:7px; overflow-x:auto; border-bottom:1px solid var(--line); scrollbar-width:none; }
+    nav::-webkit-scrollbar { display:none; }
+    .tab { min-height:34px; padding:0 13px; border:1px solid transparent; border-radius:8px; background:transparent; color:var(--muted); cursor:pointer; font:700 10px/1 var(--mono); white-space:nowrap; }
+    .tab[aria-selected="true"] { border-color:var(--line); background:var(--panel); color:var(--paper); }
+    .tab:hover,.tab:focus-visible { color:var(--paper); outline:none; }
+    .hint { margin-left:auto; color:var(--muted); font:9px/1.35 var(--mono); white-space:nowrap; }
+    .stage { min-height:0; position:relative; overflow:hidden; background:#fff; }
+    .frame-wrap { position:absolute; inset:0; overflow:hidden; }
+    iframe { width:100%; height:100%; display:block; border:0; background:#fff; }
+    .loading { position:absolute; inset:0; display:grid; place-content:center; gap:12px; background:var(--panel); color:var(--muted); text-align:center; font:11px/1.4 var(--mono); }
+    .loading[hidden] { display:none; }
+    .spinner { width:34px; height:34px; margin:auto; border:3px solid var(--line); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+    .toast { position:fixed; z-index:20; right:16px; bottom:16px; max-width:min(430px,calc(100% - 32px)); padding:11px 14px; border:1px solid var(--line); border-radius:9px; background:rgba(9,11,12,.96); color:var(--muted); font:10px/1.45 var(--mono); opacity:0; transform:translateY(8px); pointer-events:none; transition:.2s ease; }
+    .toast.show { opacity:1; transform:none; }
+    dialog { width:min(520px,calc(100% - 28px)); padding:0; border:1px solid rgba(255,101,95,.40); border-radius:16px; background:var(--panel); color:var(--paper); box-shadow:0 28px 100px rgba(0,0,0,.55); }
+    dialog::backdrop { background:rgba(0,0,0,.72); backdrop-filter:blur(4px); }
+    .modal { padding:24px; }
+    .modal .eyebrow { margin:0 0 10px; color:var(--danger); font:700 9px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; }
+    .modal h2 { margin:0; font-size:28px; letter-spacing:-.045em; }
+    .modal p { margin:14px 0 0; color:var(--muted); font-size:13px; line-height:1.55; }
+    .modal ol { margin:14px 0 0; padding-left:20px; color:var(--muted); font-size:12px; line-height:1.6; }
+    .modal-actions { margin-top:22px; display:flex; justify-content:flex-end; gap:8px; }
+    .modal-actions a { min-height:42px; padding:0 15px; display:inline-flex; align-items:center; border:1px solid var(--danger); border-radius:9px; background:var(--danger); color:#180302; font-size:12px; font-weight:800; text-decoration:none; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @media (min-width:1024px) {
+      /* Убираем левое меню Umami, вместе с переходом к обзору и карте. */
+      .frame-wrap iframe { width:calc(100% + 240px); transform:translateX(-240px); }
+    }
+    @media (max-width:720px) {
+      header { min-height:58px; padding-left:10px; padding-right:10px; gap:8px; }
+      .period,.hint { display:none; }
+      h1 { font-size:13px; }
+      .actions { gap:5px; }
+      .control { min-height:36px; max-width:128px; padding:0 9px; overflow:hidden; text-overflow:ellipsis; font-size:8px; }
+      .reset { width:36px; padding:0; font-size:0; }
+      .reset::after { content:"↺"; font-size:18px; }
+      nav { padding-top:6px; padding-bottom:6px; }
+      .tab { min-height:32px; padding:0 11px; font-size:9px; }
+      .modal { padding:20px; }
+      .modal-actions { flex-direction:column-reverse; }
+      .modal-actions .control,.modal-actions a { width:100%; max-width:none; justify-content:center; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="brand"><i class="dot" aria-hidden="true"></i><div><h1>Аналитика документов</h1><span class="period">Период 02 / 2026</span></div></div>
+      <div class="actions">
+        <button class="control owner" id="owner" type="button" aria-pressed="false">Это моё устройство</button>
+        <button class="control reset" id="reset" type="button">Сбросить всё</button>
+      </div>
+    </header>
+
+    <nav aria-label="Разделы аналитики">
+      <button class="tab" type="button" data-view="sessions" aria-selected="true">Посетители и время</button>
+      <button class="tab" type="button" data-view="events" aria-selected="false">Просмотры и скачивания</button>
+      <button class="tab" type="button" data-view="realtime" aria-selected="false">Сейчас на сайте</button>
+      <button class="tab" type="button" data-view="performance" aria-selected="false">Скорость</button>
+      <span class="hint">Нажмите на посетителя → точное время, длительность и все действия</span>
+    </nav>
+
+    <section class="stage">
+      <div class="frame-wrap"><iframe id="dashboard" title="Панель аналитики Umami" loading="eager"></iframe></div>
+      <div class="loading" id="loading"><i class="spinner" aria-hidden="true"></i><span>Загружаем подробную аналитику…</span></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="reset-dialog" aria-labelledby="reset-title">
+    <div class="modal">
+      <p class="eyebrow">Необратимое действие</p>
+      <h2 id="reset-title">Сбросить аналитику в ноль</h2>
+      <p>Umami удалит все визиты, сессии и события этого сайта. Восстановить их будет нельзя. Для защиты данных сам сброс подтверждается после входа в ваш аккаунт Umami.</p>
+      <ol>
+        <li>Нажмите «Перейти к сбросу».</li>
+        <li>На странице сайта в Umami найдите блок сброса данных.</li>
+        <li>Подтвердите полное удаление статистики.</li>
+      </ol>
+      <div class="modal-actions">
+        <button class="control" id="cancel-reset" type="button">Отмена</button>
+        <a href="https://cloud.umami.is/websites/c6a27736-6d08-4f9f-b5d8-3e9fc3ec55df/settings" target="_blank" rel="noopener">Перейти к сбросу ↗</a>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const SHARE_BASE = "https://cloud.umami.is/share/W3jhDPQgfDqtZTJ5";
+    const ownerStorageKey = "period2_owner_device";
+    const dashboard = document.querySelector("#dashboard");
+    const loading = document.querySelector("#loading");
+    const owner = document.querySelector("#owner");
+    const toast = document.querySelector("#toast");
+    const resetDialog = document.querySelector("#reset-dialog");
+    let toastTimer;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 4200);
+    }
+
+    function renderOwner() {
+      const value = localStorage.getItem(ownerStorageKey) === "yes";
+      owner.setAttribute("aria-pressed", String(value));
+      owner.textContent = value ? "Моё устройство ✓" : "Это моё устройство";
+    }
+
+    function openView(view) {
+      loading.hidden = false;
+      dashboard.src = `${SHARE_BASE}/${view}`;
+      document.querySelectorAll(".tab").forEach(tab => tab.setAttribute("aria-selected", String(tab.dataset.view === view)));
+    }
+
+    owner.addEventListener("click", () => {
+      const value = localStorage.getItem(ownerStorageKey) === "yes";
+      if (value) {
+        localStorage.removeItem(ownerStorageKey);
+        showToast("Метка снята. Следующие визиты с этого браузера будут обычными.");
+      } else {
+        localStorage.setItem(ownerStorageKey, "yes");
+        showToast("Готово. Следующие визиты с этого браузера будут отмечены как «Владелец».");
+      }
+      renderOwner();
+    });
+
+    document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => openView(tab.dataset.view)));
+    dashboard.addEventListener("load", () => { loading.hidden = true; });
+    document.querySelector("#reset").addEventListener("click", () => resetDialog.showModal());
+    document.querySelector("#cancel-reset").addEventListener("click", () => resetDialog.close());
+    resetDialog.addEventListener("click", event => { if (event.target === resetDialog) resetDialog.close(); });
+
+    renderOwner();
+    openView("sessions");
+  </script>
+</body>
+</html>
